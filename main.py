@@ -28,7 +28,7 @@ load_dotenv()
 
 # 🔐 Token del bot
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
+ADMIN = os.getenv("ADMIN")
 # 📁 Rutas de carpetas
 BASE_DIR = os.path.dirname(__file__)
 MEDIA_FOLDER = os.path.join(BASE_DIR, "MEDIA")
@@ -38,9 +38,8 @@ TUTORIALES_FOLDER = os.path.join(MEDIA_FOLDER, "Tutoriales")
 CACHED_FILES = {}
 FILE_HASHES = {}
 
-# Lista de administradores (agregar user_ids reales)
-ADMIN_IDS = [123456789]  # Reemplazar con user_ids reales
-
+# Admins
+ADMIN_IDS = [ADMIN]  
 def get_file_hash(file_path):
     """Obtiene el hash MD5 de un archivo para detectar cambios"""
     try:
@@ -165,7 +164,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await start(update, context)
 
-# Bienvenida mejorada
 async def bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for new_user in update.message.new_chat_members:
         logger.info(f"Nuevo miembro: {new_user.first_name} (ID: {new_user.id})")
@@ -180,7 +178,16 @@ async def bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
             #parse_mode='Markdown'
         )
 
-# /instalar - CON MANEJO DE ERRORES AUTOMÁTICO ⚡
+"""
+Comandos usuarios
+    -instalar > envía video
+    -pasar_pedido > envía video
+    -ingresar > envía pdf
+    -clave > envía pdf
+    -instalar Thunderbird > envía video
+    -configurar Thunderbird > envía video
+"""
+
 async def instalar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     logger.info(f"Usuario {user_id} ejecutó /instalar")
@@ -216,7 +223,6 @@ async def instalar(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"✅ Tutoriales enviados: {success_count}/{total_count}"
     )
 
-# /pasar_pedido - CON MANEJO DE ERRORES AUTOMÁTICO ⚡
 async def pasar_pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     logger.info(f"Usuario {user_id} ejecutó /pasar_pedido")
@@ -233,7 +239,6 @@ async def pasar_pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not success:
         await update.message.reply_text("⚠️ Video PasarPedido no encontrado")
 
-# /ingresar - CON MANEJO DE ERRORES AUTOMÁTICO ⚡
 async def ingresar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     logger.info(f"Usuario {user_id} ejecutó /ingresar")
@@ -250,7 +255,6 @@ async def ingresar(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not success:
         await update.message.reply_text("⚠️ No se encontró el archivo ingresar.pdf")
 
-# /clave - CON MANEJO DE ERRORES AUTOMÁTICO ⚡
 async def clave(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     logger.info(f"Usuario {user_id} ejecutó /clave")
@@ -267,42 +271,67 @@ async def clave(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not success:
         await update.message.reply_text("⚠️ No se encontró el archivo clave.pdf")
 
-#func comando instalar Thunderbird a espera de videos ----> A CONTINUAR 
+#comando instalar Thunderbird a espera de videos ----> A CONTINUAR 
 async def instalar_Thunderbird(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    logger.info(f"Usuario {user_id} ejecutó /pasar_pedido")
+    logger.info(f"Usuario {user_id} ejecutó /correo_instalar")
     
-    await update.message.reply_text("🎬 Enviando tutorial de pedidos...")
+    await update.message.reply_text("🎬 Enviando tutorial de correo...")
     
-    video_path = os.path.join(MEDIA_FOLDER, "PasarPedido.mp4")
+    video_path = os.path.join(MEDIA_FOLDER, "InstalarThunderbird.mp4")
     
     success = await send_cached_file(
-        update, video_path, "video", "pasar_pedido", 
-        "📹 App Ventas - Tutorial de pasar pedido"
+        update, video_path, "video", "InstalarThunderbird", 
+        "📨 App Correo - Tutorial para instalar"
     )
     
     if not success:
-        await update.message.reply_text("⚠️ Video PasarPedido no encontrado")
+        await update.message.reply_text("⚠️ Video InstalarThunderbird no encontrado")
 
-
-#func comando configurar Thunderbird a espera de videos ----> A CONTINUAR 
+#comando configurar Thunderbird a espera de videos ----> A CONTINUAR 
 async def configurar_Thunderbird(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    logger.info(f"Usuario {user_id} ejecutó /pasar_pedido")
+    logger.info(f"Usuario {user_id} ejecutó /correo_configurar")
     
-    await update.message.reply_text("🎬 Enviando tutorial de pedidos...")
+    await update.message.reply_text("🎬 Enviando tutorial...")
     
-    video_path = os.path.join(MEDIA_FOLDER, "PasarPedido.mp4")
+    video_path = os.path.join(MEDIA_FOLDER, "ConfigurarThunderbird.mp4")
     
     success = await send_cached_file(
-        update, video_path, "video", "pasar_pedido", 
-        "📹 App Ventas - Tutorial de pasar pedido"
+        update, video_path, "video", "ConfigurarThunderbird", 
+        "📨 App correo - Tutorial como configurar correo"
     )
     
     if not success:
-        await update.message.reply_text("⚠️ Video PasarPedido no encontrado")
+        await update.message.reply_text("⚠️ Video ConfigurarThunderbird no encontrado")
 
-# 🔍 COMANDO DEBUG PARA VERIFICAR CACHE Y ARCHIVOS
+#comando reporte 
+async def reporte(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    logger.info(f"Usuario {user_id} ejecutó /reporte")
+    await update.message.reply_text(
+            "📝Para reportar un incidente o falla con la app\n"
+            """
+            Enviar un mail a soporte.tecnico@razycia.com
+            con la siguiente información
+            Numero de vendedor:
+            Cliente:
+            Detalles:
+            Imagen Adjunta: 
+            """
+    )
+
+    pass
+
+
+"""
+Comandos admins:
+    - debug cache
+    - force cache
+    - clear_cache
+    - cache_status
+"""
+
 async def debug_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Debug del estado del cache y archivos"""
     user_id = update.effective_user.id
@@ -322,9 +351,10 @@ async def debug_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Verificar archivos de video
     videos_to_check = [
-        ("Samsung.mp4", "samsung"),
-        ("Xiaomi.mp4", "xiaomi"),
-        ("PasarPedido.mp4", "pasar_pedido")
+        ("Samsung.mp4", "Samsung"),
+        ("Xiaomi.mp4", "Xiaomi"),
+        ("PasarPedido.mp4", "pasar_pedido"),
+        ("InstalarThunderbird", "InstalarThunderbird")
     ]
     
     debug_info += "🎬 **VIDEOS:**\n"
@@ -375,7 +405,7 @@ async def debug_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text(debug_info, parse_mode='Markdown')
 
-# 🧪 COMANDO PARA FORZAR ReCache
+
 async def force_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Fuerza el cache de todos los archivos"""
     user_id = update.effective_user.id
@@ -468,7 +498,7 @@ async def cache_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text(status, parse_mode='Markdown')
 
-# 🧹 COMANDO PARA LIMPIAR CACHE (SOLO ADMIN)
+
 async def clear_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     
@@ -511,7 +541,7 @@ def main():
     logger.info(f"📝 Logs se guardarán en: {log_filename}")
     
     try:
-        # Configurar bot con timeouts optimizados
+        # Configurar bot con timeouts
         app = ApplicationBuilder()\
             .token(BOT_TOKEN)\
             .read_timeout(60)\
@@ -520,7 +550,7 @@ def main():
             .pool_timeout(20)\
             .build()
         
-        # Registrar handlers
+        #handlers activos
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, bienvenida))
         app.add_handler(CommandHandler("start", start))
         app.add_handler(CommandHandler("ayuda", ayuda))
@@ -528,6 +558,14 @@ def main():
         app.add_handler(CommandHandler("ingresar", ingresar))
         app.add_handler(CommandHandler("clave", clave))
         app.add_handler(CommandHandler("pasar_pedido", pasar_pedido))
+        #handlers activos aun sin activar video tutorial
+        app.add_handler(CommandHandler("correo_instalar", instalar_Thunderbird))
+        app.add_handler(CommandHandler("correo_configurar", configurar_Thunderbird))
+        #reporte 
+        app.add_handler(CommandHandler("reporte", reporte))
+        
+        
+        
         app.add_handler(CommandHandler("cache_status", cache_status))
         app.add_handler(CommandHandler("clear_cache", clear_cache))
         app.add_handler(CommandHandler("debug_cache", debug_cache))

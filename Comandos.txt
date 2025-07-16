@@ -1,0 +1,25 @@
+instalar - Entrega video tutorial de instalación
+ingresar - Entrega indicaciones de ingreso a la app
+clave - Entrega indicaciones de reseteo de clave
+pasar_pedido - Entrega video tutorial de como pasar pedido
+correo_instalar - Entrega video tutorial de instalación correo
+correo_configurar - Entrega video tutorial de configuración correo
+reporte - Entrega template y datos para enviar correo de reporte
+cache_status  - Estatus cache
+clear_cache - Limpieza de cache
+debug_cache - debug cache
+force_cache - forzado de cache
+
+de admin
+
+cache_status  - Estatus cache
+clear_cache - Limpieza de cache
+debug_cache - debug cache
+force_cache - forzado de cache
+
+Enviar un mail a soporte.tecnico@razycia.com
+con la siguiente información
+Numero de vendedor:
+Cliente:
+Detalles:
+Imagen Adjunta: 
