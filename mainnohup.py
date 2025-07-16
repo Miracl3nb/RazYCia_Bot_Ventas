@@ -8,7 +8,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
 # Configurar logging para archivo únicamente
-log_filename = f"bot_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+log_filename = f"bot_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
