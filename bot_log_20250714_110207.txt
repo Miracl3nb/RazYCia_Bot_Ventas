@@ -1,0 +1,13 @@
+2025-07-14 11:02:07,382 - __main__ - INFO - 🤖 Iniciando bot con cache inteligente...
+2025-07-14 11:02:07,382 - __main__ - INFO - 📝 Logs se guardarán en: bot_log_20250714_110207.txt
+2025-07-14 11:02:07,734 - __main__ - INFO - 🚀 Bot iniciado correctamente y corriendo...
+2025-07-14 11:02:23,819 - __main__ - INFO - Usuario 1508266928 ejecutó /ingresar
+2025-07-14 11:02:25,059 - __main__ - INFO - 🔄 Archivo ingresar cambió - eliminando cache anterior
+2025-07-14 11:02:25,060 - __main__ - INFO - 📤 Enviando ingresar desde archivo local...
+2025-07-14 11:02:27,421 - __main__ - INFO - ✅ ingresar enviado y cacheado con file_id: BQACAgEAAxkDAAO5aHUN...
+2025-07-14 11:03:31,275 - __main__ - INFO - Nuevo miembro: Héctor (ID: 1070297550)
+2025-07-14 11:35:30,321 - __main__ - INFO - Usuario 1070297550 ejecutó /ingresar
+2025-07-14 11:35:31,573 - __main__ - INFO - ✅ ingresar enviado desde cache
+2025-07-14 14:55:03,664 - __main__ - INFO - Usuario 1508266928 ejecutó /ingresar
+2025-07-14 14:55:06,096 - __main__ - INFO - ✅ ingresar enviado desde cache
+2025-07-14 16:38:49,897 - __main__ - INFO - 🛑 Bot detenido

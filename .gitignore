@@ -1,0 +1,21 @@
+# Entornos virtuales
+env/
+venv/
+__pycache__/
+*.pyc
+
+# Archivos sensibles
+.env
+
+# Archivos temporales o multimedia
+MEDIA/
+*.log
+*.tmp
+*.bak
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de ejecución
+*.swp
