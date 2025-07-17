@@ -174,6 +174,7 @@ async def bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "📲 /ingresar – Instrucciones para ingresar a la app\n"
             "🔑 /clave – Cómo resetear tu clave\n"
             "📝 /pasar_pedido – Cómo pasar un pedido\n"
+            "🪪 /permiso * Como habilitar permisos en segundo plano\n"
             #"❓ /ayuda – Ver todos los comandos",
             #parse_mode='Markdown'
         )
@@ -186,6 +187,7 @@ Comandos usuarios
     -clave > envía pdf
     -instalar Thunderbird > envía video
     -configurar Thunderbird > envía video
+    -permiso Permisos en segundo plano > envía video
 """
 
 async def instalar(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -287,7 +289,7 @@ async def instalar_Thunderbird(update: Update, context: ContextTypes.DEFAULT_TYP
     
     if not success:
         await update.message.reply_text("⚠️ Video InstalarThunderbird no encontrado")
-
+        
 #comando configurar Thunderbird a espera de videos ----> A CONTINUAR 
 async def configurar_Thunderbird(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -312,16 +314,54 @@ async def reporte(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
             "📝Para reportar un incidente o falla con la app\n"
             """
-            Enviar un mail a soporte.tecnico@razycia.com
-            con la siguiente información
-            Numero de vendedor:
-            Cliente:
-            Detalles:
-            Imagen Adjunta: 
-            """
+Enviar un mail a soporte.tecnico@razycia.com, con la siguiente información
+
+Asunto: (por ejemplo: Articulo no encontrado)
+
+Contenido del correo
+    Numero de vendedor:
+    Cliente:
+    Detalles:
+    Imagen Adjunta: 
+    """
     )
 
     pass
+
+async def segundo_plano(update: Update, context:ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    logger.info(f"Usuario {user_id} ejecutó /permisos")
+    
+    await update.message.reply_text("🎬 Enviando tutoriales...")
+    
+    # Rutas de videos
+    videos = [
+        ("PermisosSegundoPlano_Sam.mp4", "Permisos_Samsung", "📹 Samsung - Tutorial permisos en segundo plano"),
+        ("PermisosSegundoPlano_Xio.mp4", "Permisos_Xiaomi", "📹 Xiaomi - Tutorial permisos en segundo plano")
+    ]
+    
+    # Enviar videos con manejo automático de errores
+    tasks = []
+    
+    for video_file, key, caption in videos:
+        video_path = os.path.join(MEDIA_FOLDER, video_file)
+        
+        if os.path.exists(video_path):
+            tasks.append(send_cached_file(update, video_path, "video", key, caption))
+        else:
+            tasks.append(update.message.reply_text(f"⚠️ Video {key} no encontrado"))
+    
+    # Ejecutar en paralelo
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    # Contar éxitos
+    success_count = sum(1 for result in results if result is True)
+    total_count = len(videos)
+    
+    logger.info(f"Tutoriales enviados: {success_count}/{total_count}")
+    await update.message.reply_text(
+        f"✅ Tutoriales enviados: {success_count}/{total_count}"
+    )    
 
 
 """
@@ -331,7 +371,7 @@ Comandos admins:
     - clear_cache
     - cache_status
 """
-
+#Listar archivos a controlar chache 
 async def debug_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Debug del estado del cache y archivos"""
     user_id = update.effective_user.id
@@ -354,7 +394,9 @@ async def debug_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ("Samsung.mp4", "Samsung"),
         ("Xiaomi.mp4", "Xiaomi"),
         ("PasarPedido.mp4", "pasar_pedido"),
-        ("InstalarThunderbird", "InstalarThunderbird")
+        ("InstalarThunderbird", "InstalarThunderbird"),
+        ("PermisosSegundoPlano_Sam.mp4", "Permisos_Samsung"),
+        ("PermisosSegundoPlano_Xio.mp4", "Permisos_Xiaomi")
     ]
     
     debug_info += "🎬 **VIDEOS:**\n"
@@ -405,7 +447,6 @@ async def debug_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text(debug_info, parse_mode='Markdown')
 
-
 async def force_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Fuerza el cache de todos los archivos"""
     user_id = update.effective_user.id
@@ -426,9 +467,12 @@ async def force_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Forzar recache de videos ACA SUMAR .MP4 QUE SE SUMEN
     videos = [
-        ("Samsung.mp4", "samsung", "📹 Samsung - Tutorial de instalación"),
-        ("Xiaomi.mp4", "xiaomi", "📹 Xiaomi - Tutorial de instalación"),
-        ("PasarPedido.mp4", "pasar_pedido", "📹 App Ventas - Tutorial de pasar pedido")
+        ("Samsung.mp4", "Samsung", "📹 Samsung - Tutorial de instalación"),
+        ("Xiaomi.mp4", "Xiaomi", "📹 Xiaomi - Tutorial de instalación"),
+        ("PasarPedido.mp4", "pasar_pedido", "📹 App Ventas - Tutorial de pasar pedido"),
+        ("PermisosSegundoPlano_Sam.mp4", "Permisos_Samsung", "📹 Samsung - Tutorial permisos en segundo plano"),
+        ("PermisosSegundoPlano_Xio.mp4", "Permisos_Xiaomi", "📹 Xiaomi - Tutorial permisos en segundo plano")        
+        
     ]
     
     success_count = 0
@@ -498,7 +542,6 @@ async def cache_status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text(status, parse_mode='Markdown')
 
-
 async def clear_cache(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     
@@ -558,18 +601,19 @@ def main():
         app.add_handler(CommandHandler("ingresar", ingresar))
         app.add_handler(CommandHandler("clave", clave))
         app.add_handler(CommandHandler("pasar_pedido", pasar_pedido))
-        #handlers activos aun sin activar video tutorial
         app.add_handler(CommandHandler("correo_instalar", instalar_Thunderbird))
         app.add_handler(CommandHandler("correo_configurar", configurar_Thunderbird))
         #reporte 
         app.add_handler(CommandHandler("reporte", reporte))
+        app.add_handler(CommandHandler("permisos", segundo_plano))
         
         
         
-        app.add_handler(CommandHandler("cache_status", cache_status))
-        app.add_handler(CommandHandler("clear_cache", clear_cache))
-        app.add_handler(CommandHandler("debug_cache", debug_cache))
-        app.add_handler(CommandHandler("force_cache", force_cache))
+        
+       # app.add_handler(CommandHandler("cache_status", cache_status))
+       # app.add_handler(CommandHandler("clear_cache", clear_cache))
+       # app.add_handler(CommandHandler("debug_cache", debug_cache))
+       # app.add_handler(CommandHandler("force_cache", force_cache))
         
         # Agregar handler de errores
         app.add_error_handler(error_handler)

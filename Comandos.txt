@@ -5,10 +5,7 @@ pasar_pedido - Entrega video tutorial de como pasar pedido
 correo_instalar - Entrega video tutorial de instalación correo
 correo_configurar - Entrega video tutorial de configuración correo
 reporte - Entrega template y datos para enviar correo de reporte
-cache_status  - Estatus cache
-clear_cache - Limpieza de cache
-debug_cache - debug cache
-force_cache - forzado de cache
+permisos - Entrega video tutorial 
 
 de admin
 
